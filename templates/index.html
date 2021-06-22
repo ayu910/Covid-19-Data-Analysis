@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://d3js.org/d3-interpolate.v1.min.js">
+    </script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js">
+    </script>
+
+    <style>
+        #container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            flex-direction: column;
+        }
+
+        .blocks-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            flex-direction: row;
+            padding: 0.5vh 0.5vw;
+        }
+
+        .inner-container {
+            /* background: green; */
+            height: 35vh;
+            width: 47vw;
+            margin: 0.5vh 0.5vw;
+        }
+
+        /* ------------------------------------ Pie Related CSS ---------------------------------- */
+
+        #pie-svg {
+            /* background: green; */
+            height: 30vh;
+            width: 15vw;
+
+        }
+
+        #pie-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 15vw;
+        }
+
+        /* -------------------------------------------- END ------------------------------------------- */
+
+        /* ------------------------------------ Timeline Related CSS ---------------------------------- */
+
+        #timeline-svg {
+            /* background: green; */
+            height: 30vh;
+            width: 47vw;
+            /* margin: 1vw 1vh; */
+        }
+
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 1.5px;
+        }
+
+        .zoom {
+            cursor: move;
+            fill: none;
+            pointer-events: all;
+        }
+
+        /* -------------------------------------------- END ------------------------------------------- */
+
+        /* -------------------------------------- Map Related CSS ------------------------------------- */
+
+        #map-container {
+            /* background: green; */
+            height: 30vh;
+            width: 47vw;
+            /* margin: 1vw 1vh; */
+        }
+
+
+        .map-svg {
+            fill: white;
+        }
+
+        .country {
+            /* country border colour */
+            stroke: #f2f3fc;
+            /* country border width */
+            stroke-width: 0.1;
+            fill: grey;
+        }
+
+        .square {
+            margin-top: 0.5vh;
+            height: 2vh;
+            width: 2vh;
+            background-color: #555;
+            margin-left: 1vw;
+        }
+
+        .legend-label {
+            margin-top: 0.7vh;
+            margin-left: 0.3vw;
+        }
+
+        #green-legend {
+            background-color: #9ecae1;
+        }
+
+        #yellow-legend {
+            background-color: #43a2ca;
+        }
+
+        #orange-legend {
+            background-color: #7fcdbb;
+        }
+
+        #red-legend {
+            background-color: #2c7fb8;
+        }
+        .country-green {
+            fill: #9ecae1;
+            stroke: #f2f3fc;
+            stroke-width: 0.1;
+        }
+
+        .country-yellow {
+            fill: #43a2ca;
+            stroke: #f2f3fc;
+            stroke-width: 0.1;
+        }
+
+        .country-orange {
+            fill: #7fcdbb;
+            stroke: #f2f3fc;
+            stroke-width: 0.1;
+        }
+
+        .country-red {
+            fill: #2c7fb8;
+            stroke: #f2f3fc;
+            stroke-width: 0.1;
+        }
+
+        .country-on {
+            stroke: rgb(124, 0, 0);
+            stroke-width: 0.3;
+        }
+
+        .country-label-on {
+            display: block;
+        }
+
+        .country-label-off {
+            display: none;
+        }
+
+        .country-name-off {
+            /* country label text colour */
+            fill: #FFFAFF;
+        }
+
+        .countryLabelBg {
+            /* country label background colour */
+            fill: #30BCED;
+        }
+
+        /* -------------------------------------------- END ------------------------------------------- */
+
+        /* ------------------------------------- Chip Related CSS ------------------------------------- */
+
+        .chip-box {
+            /* border-style: solid;
+           border-color: blue;
+           border-width: 1px;
+           border-radius: 25px; */
+
+            display: flex;
+            background-color: rgba(180, 180, 180, 0.89);
+            font-size: 18px;
+            line-height: 25px;
+            padding: 5px 15px;
+            margin-top: 5px;
+            margin-left: 1.6vw;
+            margin-right: 1.6vw;
+            font-weight: bold;
+            flex-wrap: wrap;
+            position: relative;
+            border-radius: 25px;
+
+            /* border-radius: 30px;
+            background-color: rgba(180, 180, 180, 0.89);
+            width: max-content;
+            max-width: 100%;
+            font-size: 20px;
+            line-height: 30px;
+            padding: 5px 15px;
+            margin: 5px;
+            font-weight: bold;
+            overflow-wrap: break-word;
+            word-wrap: break-word; */
+
+
+        }
+
+        /* .chip {
+            display: inline-block;
+            padding: 0 10px;
+            height: 20px;
+            font-size: 12px;
+            line-height: 20px;
+            border-radius: 10px;
+            background-color: #006079;
+            color: white;
+            margin: 2px;
+        } */
+
+        .chip {
+            display: inline-block;
+            padding: 0 12.5px;
+            height: 25px;
+            font-size: 12px;
+            line-height: 25px;
+            border-radius: 12.5px;
+            background-color: #006079;
+            color: white;
+            margin: 2px;
+        }
+
+        .chip:hover {
+            background-color: #047e9c;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .closebtn {
+            padding-left: 10px;
+            color: white;
+            font-weight: bold;
+            float: right;
+            align-self: center;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: -7px;
+            margin-right: -2px;
+        }
+
+        .closebtn:hover {
+            color: rgb(255, 0, 0);
+        }
+
+        #timeline-chip-box-id {
+            width: max-content;
+            margin-left: -1vw;
+        }
+
+        #state-chip-box-id {
+            width: max-content;
+        }
+
+        /* -------------------------------------------- END ------------------------------------------- */
+
+        /* ------------------------------------- Card Related CSS ------------------------------------- */
+
+        .card {
+            /* Add shadows to create the "card" effect */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            margin: 0.5vw 0.5vh;
+        }
+
+        /* On mouse-over, add a deeper shadow */
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            flex-direction: row;
+            margin: 0 0;
+            padding: 0 0;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header-text {
+            margin: 0.3vh 0.5vw;
+        }
+
+        /* -------------------------------------------- END ------------------------------------------- */
+
+        .custom-select {
+            /* margin-bottom: 1vh; */
+            margin: 0.3vh 0.5vw;
+            width: 15vw;
+        }
+
+        /* ------------------------------------- New PCP CSS ------------------------------------- */
+        g.inactive path,
+        g.active path {
+            fill: none;
+            stroke: lightgrey;
+            stroke-linecap: "round"
+        }
+
+        g.active path {
+            stroke: rgb(43, 226, 217);
+
+        }
+
+        #pcp-svg {
+            /* background: green; */
+            height: 43vh;
+            width: 31vw;
+            /* margin: 1vw 1vh; */
+        }
+
+        #pcp-container {
+            /* background: green; */
+            height: 46vh;
+            width: 31vw;
+            /* margin: 1vw 1vh; */
+        }
+
+        /* -------------------------------------------- END ------------------------------------------- */
+
+
+        /* ------------------------------------- Stats CSS ------------------------------------- */
+
+        #stats-container {
+            height: 47vh;
+            width: 16vw;
+            margin: 1vh 0vw;
+            /* margin-left: 1vw; */
+            /* margin-right: 1vw; */
+            /* margin: 1vh 2vw; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* -------------------------------------------- END ------------------------------------------- */
+
+        /* ------------------------------------- MDS CSS ------------------------------------- */
+
+        #example2-container {
+            width: 30vw;
+        }
+
+        #mds_svg {
+            height: 43vh;
+            width: 30vw;
+        }
+
+        /* -------------------------------------------- END ------------------------------------------- */
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+            <img src="../static/icon.png" width="30" height="30" class="d-inline-block align-top" alt=""
+                style="margin-right: 0.1vw;">
+            Covid Dashboard
+        </a>
+    </nav>
+    <div id="container">
+        <div id="chip-container" style="display: flex; flex-direction: row;">
+            <div class="chip-box" id="state-chip-box-id">
+                States
+            </div>
+            <div class="chip-box" id="timeline-chip-box-id">
+                Date Range
+            </div>
+        </div>
+
+        <div class="blocks-container">
+            <div class="card">
+                <div class="inner-container" id="map-container-wrapper">
+                    <div class="card-header">
+                        <div style="display: flex; flex-direction: row; justify-content: center;">
+                            <h5 class="card-header-text">Statewise Distribution</h5>
+                            <div class="square" id="green-legend"></div>
+                            <h6 class="legend-label" id="green-legend-label">Good</h6>
+                            <div class="square" id="yellow-legend"></div>
+                            <h6 class="legend-label" id="yellow-legend-label">Moderate</h6>
+                            <div class="square" id="orange-legend"></div>
+                            <h6 class="legend-label" id="orange-legend-label">Severe</h6>
+                            <div class="square" id="red-legend"></div>
+                            <h6 class="legend-label" id="red-legend-label">Worst</h6>
+                        </div>
+                        <select class="custom-select" id="map-selector" style="width: 10vw;" onchange="onMapSelectionChange(this)">
+                            <option selected value="tot_cases">Total Cases</option>
+                            <option value="new_case">New Cases</option>
+                            <option value="tot_death">Total Deaths</option>
+                            <option value="new_death">New Deaths</option>
+                        </select>
+                    </div>
+                    <div id="map-container">
+
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="inner-container" id="timeline-container">
+                    <div class="card-header">
+                        <h5 class="card-header-text">Timeline</h5>
+                        <select class="custom-select" id="timeline-selector" onchange="onTimelineSelectionChange(this)">
+                            <option selected value="tot_cases">Total Cases</option>
+                            <option value="new_case">New Cases</option>
+                            <option value="tot_death">Total Deaths</option>
+                            <option value="new_death">New Deaths</option>
+                        </select>
+                    </div>
+                    <svg id="timeline-svg"></svg>
+                </div>
+            </div>
+            <div class="card">
+                <div class="inner-container" id="pie-container">
+                    <div class="card-header">
+                        <h5 class="card-header-text">Top 7 States</h5>
+                        <select class="custom-select" id="pie-selector" onchange="onPieSelectionChange(this)">
+                            <option selected value="tot_cases">Total Cases</option>
+                            <option value="new_case">New Cases</option>
+                            <option value="tot_death">Total Deaths</option>
+                            <option value="new_death">New Deaths</option>
+                        </select>
+                    </div>
+                    <svg id="pie-svg"></svg>
+                </div>
+            </div>
+            <div class="card">
+                <div class="inner-container" id="pcp-container">
+                    <div class="card-header">
+                        <h5 class="card-header-text" style="height: 4vh;">Parallel Coordinates Plot</h5>
+                        <!-- <select class="custom-select" id="pcp-selector" onchange="onPcpSelectionChange(this)">
+                            <option selected value="tot_cases">Total Cases</option>
+                            <option value="new_case">New Cases</option>
+                            <option value="tot_death">Total Deaths</option>
+                            <option value="new_death">New Deaths</option>
+                        </select> -->
+                    </div>
+                    <svg id="pcp-svg"></svg>
+                </div>
+            </div>
+            <div class="card">
+                <div class="inner-container" id="example2-container">
+                    <div class="card-header">
+                        <h5 class="card-header-text" style="height: 4vh;">Multidimensional Scaling</h5>
+                        <!-- <select class="custom-select" id="mds-selector" onchange="onMdsSelectionChange(this)">
+                            <option selected value="tot_cases">Total Cases</option>
+                            <option value="new_case">New Cases</option>
+                            <option value="tot_death">Total Deaths</option>
+                            <option value="new_death">New Deaths</option>
+                        </select> -->
+                    </div>
+                    <svg id="mds_svg"></svg>
+                </div>
+            </div>
+            <div class="card" id="stats-container" style="display: flex; justify-content: center; align-content: center; margin: auto 0.1vw">
+                <h4 id="worst-hit-state-stats" style="font-size: 3.5em; font-weight: bolder; color: #2c7fb8;"></h4>
+                <h6>Worst Hit State</h6>
+                <br/>
+                <h4 id="total-cases-stats" style="font-size: 1.5em; font-weight: bolder; color: #2c7fb8;"></h4>
+                <h6>Total Cases</h6>
+                <br/>
+                <h4 id="total-deaths-stats" style="font-size: 1.5em; font-weight: bolder; color: #2c7fb8;"></h4>
+                <h6>Total Deaths</h6>
+                <br/>
+                <h4 id="new-cases-stats" style="font-size: 1em; font-weight: bolder; color: #2c7fb8;"></h4>
+                <h6>New Cases</h6>
+                <br/>
+                <h4 id="new-deaths-stats" style="font-size: 1em; font-weight: bolder; color: #2c7fb8;"></h4>
+                <h6>New Deaths</h6>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var mapSelectedColumn = 'tot_cases';
+        var timelineSelectedColumn = 'tot_cases';
+        var pieSelectedColumn = 'tot_cases';
+        var mdsSelectedColumn = 'tot_cases';
+        var filteredStates = [];
+        var filteredStatesNames = [];
+        var stateFilterApplied = function () { return filteredStates.length == 0; }
+
+        var mapColorThresholds = {
+            'tot_cases': {
+                'green': 100000, 'yellow': 500000, 'orange': 1000000
+            },
+            'new_case': {
+                'green': 1000, 'yellow': 5000, 'orange': 10000
+            },
+            'tot_death': {
+                'green': 1000, 'yellow': 5000, 'orange': 10000
+            },
+            'new_death': {
+                'green': 10, 'yellow': 50, 'orange': 100
+            }
+        }
+        var minStartDate = '2020-01-22', maxEndDate = '2021-04-25';
+        var selectedStartDate = '2020-01-22', selectedEndDate = '2021-04-25';
+
+        initiateDashboard();
+
+        function fetchAndPopulatePie(endDate) {
+            fetch(`http://localhost:5000/getPieData/${endDate}/${pieSelectedColumn}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(res => {
+                return res.json();
+            }).then(json => {
+                populatePieChart(json['data']);
+            });
+        }
+
+
+        function onMapSelectionChange(e) {
+            mapSelectedColumn = e.value;
+
+            document.getElementById("red-legend-label").innerHTML = `> ${mapColorThresholds[mapSelectedColumn]['orange']}`;
+            document.getElementById("orange-legend-label").innerHTML = `< ${mapColorThresholds[mapSelectedColumn]['orange']}`;
+            document.getElementById("yellow-legend-label").innerHTML = `< ${mapColorThresholds[mapSelectedColumn]['yellow']}`;
+            document.getElementById("green-legend-label").innerHTML = `< ${mapColorThresholds[mapSelectedColumn]['green']}`;
+
+            // console.log(`mapselection=${mapSelectedColumn}`);
+            fetchAndPopulateMap(selectedEndDate, true);
+        }
+
+        function populatePieChart(data) {
+            d3.selectAll("#pie-svg > *").remove();
+            var h = document.getElementById('pie-svg').clientHeight;
+            var w = document.getElementById('pie-svg').clientWidth;
+            var labelCol = 'state';
+            var valCol = pieSelectedColumn;
+
+            var whMin = Math.min(w, h);
+            var verticalPieShift = (document.getElementById('pie-container').clientHeight - whMin) / 2;
+
+            var pieSvg = d3.select("#pie-svg")
+                .attr("width", w)
+                .attr("height", h)
+                .attr("transform", `translate(0, ${verticalPieShift + 20})`);
+
+            var svg = pieSvg.append("g")
+                .attr("transform", `translate(${w / 2}, ${h / 2})`);
+
+            var pie = d3.pie()
+                .sort(null)
+                .value(d => d[valCol]);
+
+            var arc = d3.arc()
+                .innerRadius(0)
+                .outerRadius(Math.min(w, h) / 2);
+
+            var arcLabel = function () {
+                const radius = Math.min(w, h) / 2 * 0.8;
+                return d3.arc().innerRadius(radius).outerRadius(radius);
+            }
+            // var data = [{'label': '0-10', 'value': 30}, {'lable': '10-20', 'value': 20}, {'lable': '20-30', 'value': 50}, {'lable': '30-40', 'value': 20}, {'lable': '40-50', 'value': 40}]
+            plotPieChart(data);
+
+            function plotPieChart(data) {
+                var color = d3.scaleOrdinal()
+                    .domain(data.map(d => d[labelCol]))
+                    .range(['#e8f7cf', '#d4f59f', '#b2ecb2', '#7fcdbb', '#ceee66', '#7fc97f',  '#43a2ca', '#2c7fb8'])
+
+                const arcs = pie(data);
+
+                svg.append("g")
+                    .attr("stroke", "white")
+                    .selectAll("path")
+                    .data(arcs)
+                    .enter().append("path")
+                    .attr("fill", d => color(d.data[labelCol]))
+                    .attr("d", arc)
+                // .append("title")
+                // .text(d => `--------${d.data[labelCol]}: ${d.data[valCol].toLocaleString()}`);
+
+                var total = d3.sum(data, d => d[valCol]);
+
+                svg.append("g")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", 12)
+                    .attr("text-anchor", "middle")
+                    .selectAll("text")
+                    .data(arcs)
+                    .enter().append("text")
+                    .attr("transform", d => `translate(${arcLabel().centroid(d)})`)
+                    .call(text => text.append("tspan")
+                        .attr("y", "-0.4em")
+                        .attr("font-weight", "bold")
+                        .text(d => d.data[labelCol]))
+                    .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
+                        .attr("x", 0)
+                        .attr("y", "0.7em")
+                        .attr("fill-opacity", 0.7)
+                        .text(d => (d.data[valCol] / total * 100).toFixed(1).toLocaleString() + '%'));
+            }
+        }
+
+        // Add boolean argument updateBarchart
+        function updateDashboard(updateMap, updateTimeline, updatePie) {
+            if (updateMap) {
+                fetchAndPopulateMap(selectedEndDate, false);
+            }
+            if (updateTimeline) {
+                // console.log(`updateDashboard selectedStartDate=${selectedStartDate}, selectedEndDate=${selectedEndDate}`);
+                fetchAndPopulateTimeline(filteredStates, selectedStartDate, selectedEndDate);
+
+            }
+            if (updateTimeline || updateMap){
+                fetchAndPopulateMds(filteredStates, selectedStartDate, selectedEndDate);
+            }
+            if (updatePie) {
+                fetchAndPopulatePie(selectedEndDate);
+            }
+            if (updateMap) {
+                fetchAndPlotParallelCoordinatedPlot(selectedEndDate)
+            }
+            if (updateMap || updateTimeline) {
+                fetchAndPopulateStats(filteredStates, selectedStartDate,selectedEndDate);
+            }
+        }
+
+        function onPieSelectionChange(e) {
+            pieSelectedColumn = e.value;
+            // console.log(`pieSelectedColumn=${pieSelectedColumn}`);
+            fetchAndPopulatePie(selectedEndDate);
+        }
+
+        // function onMapSelectionChange(e) {
+        //     mapSelectedColumn = e.value;
+        //     // console.log(`mapselection=${mapSelectedColumn}`);
+        //     fetchAndPopulateMap(selectedEndDate, true);
+        // }
+
+        function onTimelineSelectionChange(e) {
+            timelineSelectedColumn = e.value;
+            // console.log(`timelineselection=${timelineSelectedColumn}`);
+            fetchAndPopulateTimeline(filteredStates, selectedStartDate, selectedEndDate);
+        }
+
+        function onMdsSelectionChange(e) {
+            mdsSelectedColumn = e.value;
+            console.log(`mdsselection=${mdsSelectedColumn}`);
+            fetchAndPopulateMds(filteredStates, selectedStartDate, selectedEndDate);
+        }
+        function initiateDashboard() {
+            fetchAndPopulateMap(selectedEndDate, true);
+            document.getElementById("red-legend-label").innerHTML = `> ${mapColorThresholds['tot_cases']['orange']}`;
+            document.getElementById("orange-legend-label").innerHTML = `< ${mapColorThresholds['tot_cases']['orange']}`;
+            document.getElementById("yellow-legend-label").innerHTML = `< ${mapColorThresholds['tot_cases']['yellow']}`;
+            document.getElementById("green-legend-label").innerHTML = `< ${mapColorThresholds['tot_cases']['green']}`;
+
+            fetchAndPopulateTimeline([], minStartDate, maxEndDate);
+            fetchAndPopulateStats([], minStartDate, maxEndDate);
+            fetchAndPopulatePie(maxEndDate);
+            fetchAndPopulateMds([], minStartDate, maxEndDate);
+            fetchAndPlotParallelCoordinatedPlot(selectedEndDate);
+        }
+
+        function fetchAndPopulateMap(endDate, animate) {
+            fetch(`http://localhost:5000/getMapData/${endDate}/${mapSelectedColumn}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(res => {
+                return res.json();
+            }).then(json => {
+                populateMap(json, animate);
+            });
+        }
+
+        function fetchAndPopulateStats(states, startDate, endDate) {
+            console.log(`endDate: ${endDate}`)
+            fetch(`http://localhost:5000/getStats`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "states": states, "startDate": startDate, "endDate": endDate })
+            }).then(res => {
+                return res.json();
+            }).then(json => {
+                populateStats(json['data'], startDate, endDate);
+            });
+        }
+
+        function getNumWithComma(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function populateStats(data, startDate, endDate) {
+            document.getElementById("worst-hit-state-stats").innerHTML = data[0]['state'];
+            document.getElementById("total-cases-stats").innerHTML = getNumWithComma(data[0]['tot_cases']);
+            document.getElementById("total-deaths-stats").innerHTML = getNumWithComma(data[0]['tot_death']);
+            document.getElementById("new-deaths-stats").innerHTML = getNumWithComma(data[0]['new_death']);
+            document.getElementById("new-cases-stats").innerHTML = getNumWithComma(data[0]['new_case']);
+        }
+
+        function fetchAndPopulateTimeline(states, startDate, endDate) {
+            fetch(`http://localhost:5000/getTotalCases/${timelineSelectedColumn}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "states": states, "startDate": minStartDate, "endDate": maxEndDate })
+            }).then(res => {
+                return res.json();
+            }).then(json => {
+                populateTimeline(json['data'], startDate, endDate);
+            });
+        }
+
+        function fetchAndPopulateMds(states, startDate, endDate) {
+            fetch(`http://localhost:5000/getMdsTotalCases/${mdsSelectedColumn}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "states": states, "startDate": minStartDate, "endDate": maxEndDate })
+            }).then(res => {
+                return res.json();
+            }).then(json => {
+                MDS_correlation_plot_chart(json['data']);
+            });
+        }
+
+        function populateMap(json, animate) {
+            d3.selectAll("#map-container > *").remove();
+            var h = document.getElementById('map-container').clientHeight;
+            var w = document.getElementById('map-container').clientWidth;
+            var verticalShift = h / 5;
+            var horizontalShift = w / 3.75;
+            var minZoom;
+            var maxZoom;
+
+            var projection = d3
+                .geoEquirectangular()
+                .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
+                .scale([w / (2 * Math.PI)]) // scale to fit group width
+                .translate([w / 2, h / 2]); // ensure centred in group
+
+            // Define map path
+            var path = d3
+                .geoPath()
+                .projection(projection);
+
+            function zoomed() {
+                t = d3
+                    .event
+                    .transform;
+                countriesGroup
+                    .attr("transform", `translate(${[t.x, t.y]})scale(${t.k})`)
+            }
+            var zoom = d3
+                .zoom()
+                .on("zoom", zoomed);
+
+            var svg = d3
+                .select("#map-container")
+                .append("svg")
+                .attr("class", "map-svg")
+                .attr("width", w)
+                .attr("height", h)
+                .call(zoom)
+                .on("dblclick.zoom", null);
+
+            // Function that calculates zoom/pan limits and sets zoom to default value
+            function initiateZoom(animate) {
+                // Define a "minzoom" whereby the "Countries" is as small possible without leaving white space at top/bottom or sides
+                minZoom = Math.max(document.getElementById('map-container').clientWidth / w, document.getElementById('map-container').clientHeight / h) * 4.2;
+                // set max zoom to a suitable factor of this value
+                maxZoom = 20 * minZoom;
+                // set extent of zoom to chosen values
+                // set translate extent so that panning can't cause map to move out of viewport
+                zoom
+                    .scaleExtent([minZoom, maxZoom])
+                    .translateExtent([[0, 0], [w, h]]);
+                // define X and Y offset for centre of map to be shown in centre of holder
+                midX = (document.getElementById('map-container').clientWidth - minZoom * w) / 2;
+                midY = (document.getElementById('map-container').clientHeight - minZoom * h) / 2;
+
+
+                // console.log(`initiate zoom ${animate}`);
+                // change zoom transform to min zoom and centre offsets
+                if (animate) {
+                    svg
+                        .transition()
+                        .duration(500).call(zoom.transform, d3.zoomIdentity.translate(midX, midY).scale(minZoom));
+                } else {
+                    svg
+                        .transition()
+                        .duration(0).call(zoom.transform, d3.zoomIdentity.translate(midX, midY).scale(minZoom));
+                }
+
+                for (var i = 0; i < filteredStates.length; i++) {
+                    initSelectedState(filteredStatesNames[i]);
+                }
+            }
+
+            function getNumberInHumanForm(n) {
+                if (mapSelectedColumn == 'tot_cases') {
+                    if (n > 1000000) {
+                        var ret = n / 1000000;
+                        return `${ret.toFixed(2)}M`;
+                    }
+
+                    var ret = n / 1000;
+                    return `${ret.toFixed(2)}k`;
+                }
+                return n;
+            }
+
+            function getTextBox(selection) {
+                selection
+                    .each(function (d) {
+                        d.bbox = this
+                            .getBBox();
+                    });
+            }
+
+            // zoom to show a bounding box, with optional additional padding as percentage of box size
+            function boxZoom(box, centroid, paddingPerc) {
+                minXY = box[0];
+                maxXY = box[1];
+                // find size of map area defined
+                zoomWidth = Math.abs(minXY[0] - maxXY[0]);
+                zoomHeight = Math.abs(minXY[1] - maxXY[1]);
+                // find midpoint of map area defined
+                zoomMidX = centroid[0] + horizontalShift;
+                zoomMidY = centroid[1] + verticalShift;
+                // increase map area to include padding
+                zoomWidth = zoomWidth * (1 + paddingPerc / 100);
+                zoomHeight = zoomHeight * (1 + paddingPerc / 100);
+                // find scale required for area to fill svg
+                maxXscale = $("svg").width() / zoomWidth;
+                maxYscale = $("svg").height() / zoomHeight;
+                zoomScale = Math.min(maxXscale, maxYscale);
+                // handle some edge cases
+                // limit to max zoom (handles tiny countries)
+                zoomScale = Math.min(zoomScale, maxZoom) * 0.05;
+                // limit to min zoom (handles large countries and countries that span the date line)
+                zoomScale = Math.max(zoomScale, minZoom);
+                // Find screen pixel equivalent once scaled
+                offsetX = zoomScale * zoomMidX;
+                offsetY = zoomScale * zoomMidY;
+                // Find offset to centre, making sure no gap at left or top of holder
+                dleft = Math.min(0, $("svg").width() / 2 - offsetX);
+                dtop = Math.min(0, $("svg").height() / 2 - offsetY);
+                // Make sure no gap at bottom or right of holder
+                dleft = Math.max($("svg").width() - w * zoomScale, dleft);
+                dtop = Math.max($("svg").height() - h * zoomScale, dtop);
+                // set zoom
+                svg
+                    .transition()
+                    .duration(500)
+                    .call(
+                        zoom.transform,
+                        d3.zoomIdentity.translate(dleft, dtop).scale(zoomScale)
+                    );
+            }
+
+            $(window).resize(function () {
+                svg
+                    .attr("width", $("#map-container").width())
+                    .attr("height", $("#map-container").height());
+                // console.log("From jquery")
+                initiateZoom(true);
+            });
+
+
+            countriesGroup = svg
+                .append("g").attr("id", "map").attr("width", w)
+
+            countriesGroup
+                .append("rect")
+                .attr("width", w)
+                .attr("height", h)
+                .on("dblclick", function (e) {
+                    deselectAllStates();
+                    initiateZoom(true);
+                })
+                .on("click", function (e) {
+                    initiateZoom(true);
+                });
+
+            countries = countriesGroup
+                .selectAll("path")
+                .data(json.features)
+                .enter()
+                .append("path")
+                .attr("d", path)
+                .attr("transform", `translate(${horizontalShift}, ${verticalShift})`)
+                .attr("id", function (d, i) {
+                    return "country" + d.properties.name.replace(/ /g, '');
+                })
+                .attr("class", function (d, i) {
+                    var totalCases = d.properties[mapSelectedColumn];
+
+                    var color = "";
+                    if (totalCases < mapColorThresholds[mapSelectedColumn]['green']) {
+                        color = "green";
+                    } else if (totalCases < mapColorThresholds[mapSelectedColumn]['yellow']) {
+                        color = "yellow";
+                    } else if (totalCases < mapColorThresholds[mapSelectedColumn]['orange']) {
+                        color = "orange";
+                    } else {
+                        color = "red";
+                    }
+                    return "country country-" + color;
+                })
+                .on("mouseover", function (d, i) {
+                    d3.select("#countryLabel" + d.properties.name.replace(/ /g, '')).style("display", "block");
+                })
+                .on("mouseout", function (d, i) {
+                    if (!d3.select("#countryLabel" + d.properties.name.replace(/ /g, '')).classed("country-label-on")) {
+                        d3.select("#countryLabel" + d.properties.name.replace(/ /g, '')).style("display", "none");
+                    }
+                })
+                // add an onclick action to zoom into clicked country
+                .on("click", function (d, i) {
+                    if (!d3.select("#countryLabel" + d.properties.name.replace(/ /g, '')).classed("country-label-on")) {
+                        selectState(d.properties.name.replace(/ /g, ''), d.properties.STUSPS);
+                        addStateChip(d.properties.name.replace(/ /g, ''), d.properties.STUSPS);
+                        boxZoom(path.bounds(d), path.centroid(d), 20);
+                    } else {
+                        // Below 2 lines were for deselect state
+                        // d3.select("#country" + d.properties.name.replace(/ /g, '')).classed("country-on", false);
+                        // d3.select("#countryLabel" + d.properties.name.replace(/ /g, '')).classed('country-label-on', false);
+                        deselectState(d.properties.name.replace(/ /g, ''), d.properties.STUSPS);
+                        removeStateChip(d.properties.name.replace(/ /g, ''));
+                        boxZoom(path.bounds(d), path.centroid(d), 20);
+                    }
+                });
+
+            // Add a label group to each feature/country. This will contain the country name and a background rectangle
+            // Use CSS to have class "countryLabel" initially hidden
+            countryLabels = countriesGroup
+                .selectAll("g")
+                .data(json.features)
+                .enter()
+                .append("g")
+                .attr("class", "country-label-off")
+                .attr("id", function (d) {
+                    return "countryLabel" + d.properties.name.replace(/ /g, '');
+                })
+                .attr("transform", function (d) {
+                    return (
+                        `translate(${path.centroid(d)[0] + horizontalShift}, ${path.centroid(d)[1] + verticalShift})` // TODO:
+                    );
+                })
+                .on("mouseover", function (d, i) {
+                    d3.select(this).style("display", "block");
+                })
+                .on("mouseout", function (d, i) {
+                    if (!d3.select("#countryLabel" + d.properties.name.replace(/ /g, '')).classed("country-label-on")) {
+                        d3.select(this).style("display", "none");
+                    }
+                })
+                .on("click", function (d, i) {
+                    if (!d3.select("#countryLabel" + d.properties.name.replace(/ /g, '')).classed("country-label-on")) {
+                        selectState(d.properties.name.replace(/ /g, ''), d.properties.STUSPS);
+                        addStateChip(d.properties.name.replace(/ /g, ''), d.properties.STUSPS);
+                        boxZoom(path.bounds(d), path.centroid(d), 20);
+                    } else {
+                        // Below 2 lines were for deselect state
+                        // d3.select("#country" + d.properties.name.replace(/ /g, '')).classed("country-on", false);
+                        // d3.select("#countryLabel" + d.properties.name.replace(/ /g, '')).classed('country-label-on', false);
+                        deselectState(d.properties.name.replace(/ /g, ''), d.properties.STUSPS);
+                        removeStateChip(d.properties.name.replace(/ /g, ''));
+                        boxZoom(path.bounds(d), path.centroid(d), 20);
+                    }
+                });
+            // add the text to the label group showing country name
+            countryLabels
+                .append("text")
+                .attr("class", "country-name-off")
+                .style("text-anchor", "middle")
+                .attr("dx", 0)
+                .attr("dy", 0)
+                .text(function (d) {
+                    return `${d.properties.name}: ${getNumberInHumanForm(d.properties[mapSelectedColumn])}`;
+                })
+                .style("font-size", "0.19vw")
+                .call(getTextBox);
+            // add a background rectangle the same size as the text
+            countryLabels
+                .insert("rect", "text")
+                .attr("class", "countryLabelBg")
+                .attr("transform", function (d) {
+                    return "translate(" + (d.bbox.x) + "," + (d.bbox.y) + ")";
+                })
+                .attr("width", function (d) {
+                    return d.bbox.width;
+                })
+                .attr("height", function (d) {
+                    return d.bbox.height;
+                });
+            initiateZoom(animate);
+
+            function removeStateChip(name) {
+                d3.select("#chip-" + name).remove();
+            }
+
+            function addStateChip(name, id) {
+                d3.select("#state-chip-box-id")
+                    .append("div")
+                    .attr("class", "chip")
+                    .attr("id", "chip-" + name)
+                    .text(name)
+                d3.select("#chip-" + name)
+                    .append("span")
+                    .attr("class", "closebtn")
+                    .attr("id", "closebtn-" + name)
+                    .text("×")
+                    .on("click", function (e) {
+                        this.parentElement.remove();
+                        deselectState(name, id);
+                    })
+            }
+
+            function initSelectedState(name) {
+                d3.select("#country" + name).classed("country-on", true);
+                d3.select("#countryLabel" + name).style("display", "block");
+                d3.select("#countryLabel" + name).classed('country-label-on', true);
+            }
+
+            function selectState(name, id) {
+                filteredStates.push(id);
+                filteredStatesNames.push(name);
+                d3.select("#country" + name).classed("country-on", true);
+                d3.select("#countryLabel" + name).classed('country-label-on', true);
+                updateDashboard(false, true, false);
+                // fetchAndPopulateTimeline(filteredStates, selectedStartDate, selectedEndDate);
+            }
+
+            function deselectState(name, id) {
+                d3.select("#country" + name).classed("country-on", false);
+                d3.select("#countryLabel" + name).style("display", "none");
+                d3.select("#countryLabel" + name).classed('country-label-on', false);
+                deleteFromArray(filteredStates, id);
+                deleteFromArray(filteredStatesNames, name);
+                updateDashboard(false, true, false);
+                // fetchAndPopulateTimeline(filteredStates, selectedStartDate, selectedEndDate);
+            }
+
+            function deleteFromArray(arr, del) {
+                var d = 0;
+
+                for (var i = 0; i < arr.length; i++) {
+                    if (del == arr[i]) {
+                        arr.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+
+            function deselectAllStates() {
+                d3.selectAll(".country").classed("country-on", false);
+                d3.selectAll(".country-label-on").style("display", "none");
+                d3.selectAll(".country-label-on").classed("country-label-on", false);
+                d3.selectAll(".chip").remove();
+                filteredStates = [];
+                filteredStatesNames = [];
+                // console.log(filteredStates);
+                updateDashboard(false, true, false);
+                // fetchAndPopulateTimeline(filteredStates, selectedStartDate, selectedEndDate);
+            }
+
+        }
+
+        function populateTimeline(data, startTimelineDate, endTimelineDate) {
+            d3.selectAll("#timeline-svg > *").remove();
+            var yColumn = timelineSelectedColumn;
+            var beginEndDate = '2021-04-25';
+            var beginStartDate = '2020-01-22';
+            var svg = d3.select("#timeline-svg"),
+                // margin = { top: 20, right: 20, bottom: 110, left: 40 },
+                // margin2 = { top: 390, right: 20, bottom: 30, left: 40 },
+                totalHeight = document.getElementById('timeline-svg').clientHeight,
+                totalWidth = document.getElementById('timeline-svg').clientWidth,
+                width = totalWidth * 0.92,
+                height = totalHeight * 0.70,
+                height2 = totalHeight * 0.15;
+
+
+            // var parseDate = d3.timeParse("%m/%d/%Y");
+            var parseDate = d3.timeParse("%Y-%m-%dT%H:%M:%S.%LZ");
+
+            var x = d3.scaleTime().range([0, width]),
+                x2 = d3.scaleTime().range([0, width]),
+                y = d3.scaleLinear().range([height, 0]),
+                y2 = d3.scaleLinear().range([height2, 0]);
+
+            var xAxis = d3.axisBottom(x),
+                xAxis2 = d3.axisBottom(x2),
+                yAxis = d3.axisLeft(y);
+
+            var brush = d3.brushX()
+                .extent([[0, 0], [width, height2]])
+                .on("start", brushStart)
+                .on("end", brushEnd)
+                .on("brush", brushed);
+
+            var zoom = d3.zoom()
+                .scaleExtent([1, Infinity])
+                .translateExtent([[0, 0], [width, height]])
+                .extent([[0, 0], [width, height]])
+                .on("zoom", zoomed);
+
+            var line = d3.line()
+                .x(function (d) {
+                    // console.log(`d.submission_date: ${d.submission_date}, yColumn: ${+d[yColumn]}`);
+                    return x(parseDate(d.submission_date));
+                })
+                .y(function (d) { return y(+d[yColumn]); });
+
+            var line2 = d3.line()
+                .x(function (d) { return x2(parseDate(d.submission_date)); })
+                .y(function (d) { return y2(+d[yColumn]); });
+
+            var clip = svg.append("defs").append("svg:clipPath")
+                .attr("id", "clip")
+                .append("svg:rect")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("x", 0)
+                .attr("y", 0);
+
+
+            var lineChart = svg.append("g")
+                .attr("class", "focus")
+                .attr("transform", `translate(${totalWidth * 0.07}, 0)`)
+                .attr("clip-path", "url(#clip)");
+
+
+            var focus = svg.append("g")
+                .attr("class", "focus")
+                // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                .attr("transform", `translate(${totalWidth * 0.07}, 0)`);
+
+            var context = svg.append("g")
+                .attr("class", "context")
+                // .attr("transform", "translate(" + margin2.left + "," + (height * 1.12) + ")");
+                .attr("transform", `translate(${totalWidth * 0.07}, ${(totalHeight * 0.78)})`);
+
+            setTimelineData(data);
+
+            // d3.csv("covidCA.csv", function (error, data) {
+            function setTimelineData(data) {
+                // if (error) throw error;
+
+                x.domain(d3.extent(data, function (d) { return parseDate(d.submission_date); }));
+                y.domain([0, d3.max(data, function (d) { return +d[yColumn] + 2; })]);
+                x2.domain(x.domain());
+                y2.domain(y.domain());
+
+                focus.append("g")
+                    .attr("class", "axis axis--x")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+
+                focus.append("g")
+                    .attr("class", "axis axis--y")
+                    .call(yAxis);
+
+                lineChart.append("path")
+                    .datum(data)
+                    .attr("class", "line")
+                    .attr("d", line);
+
+                context.append("path")
+                    .datum(data)
+                    .attr("class", "line")
+                    .attr("d", line2);
+
+
+                context.append("g")
+                    .attr("class", "axis axis--x")
+                    .attr("transform", "translate(0," + height2 + ")")
+                    .call(xAxis2);
+
+                context.append("g")
+                    .attr("class", "brush")
+                    .call(brush)
+                    .call(brush.move, x.range());
+
+                svg.append("rect")
+                    .attr("class", "zoom")
+                    .attr("width", width)
+                    .attr("height", height)
+                    // .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                    .call(zoom);
+
+                setInitalSelectedTimeline(startTimelineDate, endTimelineDate);
+                addTimelineChip(startTimelineDate, endTimelineDate);
+            }
+
+            function brushStart() {
+                // console.log("Brush Started");
+                if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+                var s = d3.event.selection || x2.range();
+                var end = s.map(x2.invert, x2)[1];
+                var start = s.map(x2.invert, x2)[0];
+                beginEndDate = `${end.getFullYear()}-${convertTo2Digits(end.getUTCMonth() + 1)}-${convertTo2Digits(end.getDate())}`;
+                beginStartDate = `${start.getFullYear()}-${convertTo2Digits(start.getUTCMonth() + 1)}-${convertTo2Digits(start.getDate())}`;
+            }
+            function brushEnd() {
+                // console.log("Brush Ended");
+                if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+
+                var parseDateYYYYMMDD = d3.timeParse("%Y-%m-%d");
+                var startIndex = x2(parseDateYYYYMMDD(startDate));
+                var endIndex = x2(parseDateYYYYMMDD(endDate));
+
+                var s = d3.event.selection || x2.range();
+                var start = s.map(x2.invert, x2)[0];
+                var end = s.map(x2.invert, x2)[1];
+                if (!isNaN(end.getDate()) || !isNaN(start.getDate())) {
+                    var startDate = `${start.getFullYear()}-${convertTo2Digits(start.getUTCMonth() + 1)}-${convertTo2Digits(start.getDate())}`;
+                    var endDate = `${end.getFullYear()}-${convertTo2Digits(end.getUTCMonth() + 1)}-${convertTo2Digits(end.getDate())}`;
+                    // console.log(`startDate=${startDate}, endDate=${endDate}`);
+
+                    if (!isNaN(end.getDate())) {
+                        selectedEndDate = endDate;
+                    }
+                    if (!isNaN(start.getDate())) {
+                        selectedStartDate = startDate;
+                    }
+
+                    if (endDate !== beginEndDate || startDate !== beginStartDate) {
+                        // console.log(`selectedStartDate: ${selectedStartDate}, selectedEndDate: ${selectedEndDate}`);
+                        updateDashboard(true, false, true);
+                        addTimelineChip(selectedStartDate, selectedEndDate);
+                    }
+                    // fetchAndPopulateMap(selectedEndDate, false);
+                }
+            }
+
+            function brushed() {
+                // console.log("Brush Ended")
+                if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+                var s = d3.event.selection || x2.range();
+                // console.log(s)
+                x.domain(s.map(x2.invert, x2));
+                // console.log(s.map(x2.invert, x2))
+
+                lineChart.select(".line").attr("d", line);
+                focus.select(".axis--x").call(xAxis);
+                svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
+                    .scale(width / (s[1] - s[0]))
+                    .translate(-s[0], 0));
+            }
+
+            function setInitalSelectedTimeline(startDate, endDate) {
+                // console.log(`setInitalSelectedTimeline: ${startDate} - ${endDate}`);
+
+                var parseDateYYYYMMDD = d3.timeParse("%Y-%m-%d");
+                var startIndex = x2(parseDateYYYYMMDD(startDate));
+                var endIndex = x2(parseDateYYYYMMDD(endDate));
+
+                var s = [startIndex, endIndex];
+                x.domain(s.map(x2.invert, x2));
+                lineChart.select(".line").attr("d", line);
+                focus.select(".axis--x").call(xAxis);
+                svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
+                    .scale(width / (endIndex - startIndex))
+                    .translate(-startIndex, 0));
+
+                selectedStartDate = startDate;
+                selectedEndDate = endDate;
+            }
+
+            function convertTo2Digits(n) {
+                return n < 10 ? `0${n}` : `${n}`;
+            }
+
+            function zoomed() {
+                if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+                var t = d3.event.transform;
+                x.domain(t.rescaleX(x2).domain());
+                lineChart.select(".line").attr("d", line);
+                focus.select(".axis--x").call(xAxis);
+                context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
+            }
+
+            // function type(d) {
+            // d.submission_date = parseDate(d.submission_date);
+            // console.log(`old d[yColumn] ${d[yColumn]}`);
+            // console.log(`   old typeof(d[yColumn]) ${typeof(d[yColumn])}`);
+            // d[yColumn] = +d[yColumn];
+            // console.log(`   new d[yColumn] ${d[yColumn]}`);
+            // console.log(`   new typeof(d[yColumn]) ${typeof(d[yColumn])}`);
+            // return d;
+            // }
+
+            function addTimelineChip(startTimelineChipDate, endTimelineChipDate) {
+                removeTimelineChip();
+                d3.select("#timeline-chip-box-id")
+                    .append("div")
+                    .attr("class", "chip")
+                    .attr("id", "chip-startdate")
+                    .text(startTimelineChipDate);
+
+                // d3.select("#chip-startdate")
+                //     .append("span")
+                //     .attr("class", "closebtn")
+                //     .attr("id", "closebtn-" + 'startdate')
+                //     .text("×")
+                //     .on("click", function (e) {
+                //     });
+
+                d3.select("#timeline-chip-box-id")
+                    .append("div")
+                    .attr("class", "chip")
+                    .attr("id", "chip-enddate")
+                    .text(endTimelineChipDate);
+                // d3.select("#chip-" + 'enddate')
+                //     .append("span")
+                //     .attr("class", "closebtn")
+                //     .attr("id", "closebtn-" + 'enddate')
+                //     .text("×")
+                //     .on("click", function (e) {
+                //         this.parentElement.remove();
+                //         removeTimelineChip('end');
+                //     })
+            }
+
+            function removeTimelineChip(name) {
+                d3.select("#chip-startdate").remove();
+                d3.select("#chip-enddate").remove();
+            }
+        }
+
+        // mds plot
+        // function MDS_correlation_plot(){
+        //   $.getJSON(url+'/MDSforCorrelation',{
+        //   },function(output){
+        // 			MDS_correlation_plot_chart(output.data);
+        // 	});
+        // }
+
+        function MDS_correlation_plot_chart(data) {
+            // console.log(data);
+            d3.select("#mds_svg").html("");
+            var padding = { top: 10, right: 20, bottom: 20, left: 20 };
+            var height = document.getElementById('mds_svg').clientHeight;
+            var width = document.getElementById('mds_svg').clientWidth;
+            // var width = 600;
+            // var height = 340;
+            var x = []
+            var y = []
+            for (var i = 0; i < data.length; i++) {
+                x.push(data[i].x)
+                y.push(data[i].y)
+            }
+
+            var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            var svg = d3.select("#mds_svg").attr("width", width + 100).attr("height", height + 100)
+                .attr("transform", "translate(0," + padding.top + ")")
+
+            var xScale = d3.scaleLinear()
+                .domain([d3.min(x) - 1, d3.max(x) + 1])
+                .range([0, width - 100])
+
+            var yScale = d3.scaleLinear()
+                .domain([d3.min(y) - 1, d3.max(y) + 1])
+                .range([height - 100, 0])
+
+            var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            var xAxis = d3.axisBottom()
+                .scale(xScale)
+
+            var yAxis = d3.axisLeft()
+                .scale(yScale)
+
+
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(50," + (height - 75) + ")")
+                .call(xAxis)
+
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .attr("transform", "translate(50,25)")
+
+
+            svg.append("text").attr("text-anchor", "middle").attr("transform", "translate(" + (17) + "," + (height / 2 - 20) + ")rotate(-90)").text("MDS 2");
+            svg.append("text").attr("text-anchor", "middle").attr("transform", "translate(" + (width / 2 + 10) + "," + (height - 35) + ")").text("MDS 1");
+
+
+            svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("r", 10)
+                .attr("cx", function (d) {
+                    return xScale(d.x);
+                })
+                .attr("cy", function (d) { return yScale(d.y) })
+                .style("fill", function(d) { return color(d.cluster);})
+
+
+            for (var i = 0; i < data.length; i++) {
+                svg.append("g").append("text")
+                    .attr("transform", "translate(" + (xScale(data[i]['x']) - 15) + "," + (yScale(data[i]['y']) - 15) + ")")
+                    .text(data[i]['Attr'])
+            }
+        }
+
+
+        function fetchAndPlotParallelCoordinatedPlot(enddate) {
+            fetch(`http://localhost:5000/getDataAndColumns/${enddate}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(res => {
+                return res.json();
+            }).then(json => {
+                plotParallelCoordinatedPlot(json.data, json.columns, json.labels)
+            });
+            // var data = [{ 'a': 1, 'b': 2, 'c': 3, 'd': 1 }, { 'a': 3, 'b': 3, 'c': 2, 'd': 9 }, { 'a': 2, 'b': 9, 'c': 0, 'd': 5.5 },
+            // { 'a': 1, 'b': 0, 'c': 10, 'd': 1.5 }, { 'a': 4, 'b': 5, 'c': 3.5, 'd': 2.1 }, { 'a': 3, 'b': 1, 'c': 6.5, 'd': 8.5 }],
+            //     columns = ['a', 'b', 'c', 'd'];
+            // plotParallelCoordinatedPlot(data, columns, [0, 0, 1, 0, 2, 1]);
+        };
+
+        function plotParallelCoordinatedPlot(data, features, labels) {
+            d3.selectAll("#pcp-svg > *").remove();
+            // const data = [
+            //     { player: 1, team: 1, distance: 12, time_standing: 2, time_jogging: 2, time_sprinting: 1, fast_distance: 10, sprint_distance: 2, work_to_rest: 1 },
+            //     { player: 3, team: 2, distance: 13, time_standing: 3, time_jogging: 3, time_sprinting: 1, fast_distance: 7, sprint_distance: 5, work_to_rest: 1 },
+            //     { player: 12, team: 1, distance: 21, time_standing: 2, time_jogging: 4, time_sprinting: 5, fast_distance: 18, sprint_distance: 3, work_to_rest: 2 },
+            //     { player: 34, team: 1, distance: 4, time_standing: 3, time_jogging: 1, time_sprinting: 0, fast_distance: 2, sprint_distance: 0, work_to_rest: 1 },
+            //     { player: 1, team: 1, distance: 9, time_standing: 2, time_jogging: 2.3, time_sprinting: 2.2, fast_distance: 1, sprint_distance: 2, work_to_rest: 1 },
+            //     { player: 3, team: 2, distance: 3, time_standing: 1, time_jogging: 0.3, time_sprinting: 2, fast_distance: 17, sprint_distance: 3, work_to_rest: 1 },
+            //     { player: 12, team: 1, distance: 7, time_standing: 0.5, time_jogging: 2.5, time_sprinting: 4, fast_distance: 8, sprint_distance: 4, work_to_rest: 2 },
+            //     { player: 34, team: 1, distance: 2, time_standing: 1.2, time_jogging: 1.8, time_sprinting: 0.6, fast_distance: 12, sprint_distance: 1, work_to_rest: 1 }
+            // ];
+
+            // const features = [
+            //     'team',
+            //     'distance',
+            //     'time_standing',
+            //     'time_jogging',
+            //     'time_sprinting',
+            //     'fast_distance',
+            //     'sprint_distance',
+            //     'work_to_rest',
+            // ];
+
+            var height = document.getElementById('pcp-svg').clientHeight,
+                width = document.getElementById('pcp-svg').clientWidth;
+            var vPadding = 30;
+            var hPadding = 60;
+            var brush_width = 20;
+            const filters = {};
+
+            // Horizontal scale
+            const xScale = d3.scalePoint()
+                .domain(features.map(x => x))
+                .range([hPadding, width - hPadding]);
+
+            // Each vertical scale
+            const yScales = {};
+            features.map(feature => {
+                yScales[feature] = d3.scaleLinear()
+                    .domain(d3.extent(data, function(d) {return d[feature]}))
+                    .range([height - vPadding, vPadding]);
+            });
+            yScales.state = d3.scalePoint()
+                .domain(d3.set(data, function(d) {return d['state']}).values())
+                .range([height - vPadding, vPadding]);
+
+            // Each axis generator
+            const yAxis = {};
+            d3.entries(yScales).map(yScale => {
+                yAxis[yScale.key] = d3.axisLeft(yScale.value);
+            });
+
+            const brushEventHandler = function (feature) {
+                // console.log(d3.event.sourceEvent.type);
+                if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom")
+                    return; // ignore brush-by-zoom
+                if (d3.event.selection != null) {
+                    if (feature == 'state') {
+                        var valueRange = d3.event.selection;
+                        var startValue = yScales.state.domain()[yScales.state.domain().length - 1];
+                        // console.log(yScales.state(startValue))
+                        // console.log(`0: ${d3.event.selection[0]} 1: ${d3.event.selection[1]}`)
+                        // console.log(`0: ${(d3.event.selection[0] - yScales.state(startValue))/yScales.state.step()} 1: ${(d3.event.selection[1] - yScales.state(startValue))/yScales.state.step()}`)
+
+                        var indexRange = [
+                            (yScales.state.domain().length) - Math.ceil((d3.event.selection[1] - yScales.state(startValue)) / yScales.state.step()),
+                            (yScales.state.domain().length) - Math.floor( (d3.event.selection[0] - yScales.state(startValue)) / yScales.state.step())
+                            ];
+                        // var indexRange = [yScales.state.domain().length - Math.floor((d3.event.selection[0] - yScales.state(startValue))/yScales.state.step()) - 1,
+                        // (yScales.state.domain().length - Math.floor((d3.event.selection[1] - yScales.state(startValue))/yScales.state.step()) - 1) + 1];
+                        // console.log(indexRange)
+                        filters[feature] = yScales.state.domain().slice(indexRange[0], indexRange[1]);
+                    } else {
+                        filters[feature] = d3.event.selection.map(d => yScales[feature].invert(d));
+                    }
+                } else {
+                    if (feature in filters)
+                        delete (filters[feature]);
+                }
+                applyFilters();
+            }
+
+            const applyFilters = function () {
+                d3.select('g.active').selectAll('path')
+                    .style('display', d => (selected(d) ? null : 'none'));
+            }
+
+            const selected = function (d) {
+                const _filters = d3.entries(filters);
+                return _filters.every(f => {
+                    if (f.key == "state") {
+                        return f.value.includes(d[f.key]);
+                    } else {
+                        return f.value[1] <= d[f.key] && d[f.key] <= f.value[0];
+                    }
+                });
+            }
+
+            const yBrushes = {};
+            d3.entries(yScales).map(x => {
+                let extent = [
+                    [-(brush_width / 2), vPadding],
+                    [brush_width / 2, height - vPadding + 1]
+                ];
+                yBrushes[x.key] = d3.brushY()
+                    .extent(extent)
+                    .on('brush', () => brushEventHandler(x.key))
+                    .on('end', () => brushEventHandler(x.key));
+            });
+
+            // Paths for data
+            const lineGenerator = d3.line();
+
+            const linePath = function (d) {
+                const _data = d3.entries(d).filter(x => x.key != 'player');
+                var points = [];
+                for (var i = 0; i < features.length; i++) {
+                    if (features[i] == 'state') {
+                        points.push([xScale(features[i]), yScales[features[i]](d[features[i]])]);
+                    } else {
+                        points.push([xScale(features[i]), yScales[features[i]](d[features[i]])]);
+                    }
+                }
+                // let points = _data.map(x => ([xScale(x.key), yScales[x.key](x.value)]));
+                return (lineGenerator(points));
+            }
+
+            const pcSvg = d3.select('#pcp-svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Inactive data
+            pcSvg.append('g').attr('class', 'inactive').selectAll('path')
+                .data(data)
+                .enter()
+                .append('path')
+                .attr('d', d => linePath(d));
+
+            // Inactive data
+            pcSvg.append('g').attr('class', 'active').selectAll('path')
+                .data(data)
+                .enter()
+                .append('path')
+                .style("stroke", (d, i) => {
+                        if (labels[i] == 0) {
+                            return "#9ecae1";
+                        } else if (labels[i] == 1) {
+                            return "#43a2ca";
+                        } else if (labels[i] == 2) {
+                            return "#7fcdbb";
+                        } else if (labels[i] == 3) {
+                            return "#ceee66";
+                        } else if (labels[i] == 4) {
+                            return "#2c7fb8";
+                        }
+                    }
+                )
+                .attr('d', d => linePath(d));
+
+            // Vertical axis for the features
+            const featureAxisG = pcSvg.selectAll('g.feature')
+                .data(features)
+                .enter()
+                .append('g')
+                .attr('class', 'feature')
+                .attr('transform', d => ('translate(' + xScale(d) + ',0)'));
+
+            featureAxisG
+                .append('g')
+                .each(function (d) {
+                    // if (d == 'state') {
+                    //     d3.select(this).attr("transform", `translate(0, -15)`).call(yAxis[d]);
+                    // } else {
+                        d3.select(this).call(yAxis[d]);
+                    // }
+                });
+
+            featureAxisG
+                .each(function (d) {
+                    d3.select(this)
+                        .append('g')
+                        .attr('class', 'brush')
+                        .call(yBrushes[d]);
+                });
+
+            featureAxisG
+                .append("text")
+                .attr("text-anchor", "middle")
+                .attr('y', vPadding / 1.5)
+                .text(d => d);
+        }
+    </script>
+
+</body>
+
+</html>

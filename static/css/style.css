@@ -1,0 +1,219 @@
+.myclass{
+   color:red
+}
+
+.error {
+  color: blue;
+}
+
+.block {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.project_title{
+  font-size: 80px;
+  background-color: lightgrey;
+  color: red;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 70px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: red;
+  color: white;
+}
+
+
+/* --------------------------------------------------------- Map related CSS --------------------------------------------------------- */
+body {
+            margin: 0;
+            /* background-color: #2A2C39; */
+            font-family: 'Yanone Kaffeesatz', sans-serif;
+            font-weight: 200;
+            font-size: 17px;
+        }
+
+        #map-holder {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        svg rect {
+            fill: #2A2C39;
+            /* fill: #87edff; */
+            /* map background colour */
+        }
+
+        .country {
+            /* fill: #d0d0d0; */
+            /* country colour */
+            stroke: #f2f3fc;
+            /* country border colour */
+            stroke-width: 0.1;
+            /* country border width */
+        }
+
+        .country-green {
+            fill: #fccc65;
+            /* country colour */
+            stroke: #f2f3fc;
+            /* country border colour */
+            stroke-width: 0.1;
+            /* country border width */
+        }
+        .country-yellow {
+            fill: #fca028;
+            /* country colour */
+            stroke: #f2f3fc;
+            /* country border colour */
+            stroke-width: 0.1;
+            /* country border width */
+        }
+        .country-orange {
+            fill: #ff7322;
+            /* country colour */
+            stroke: #f2f3fc;
+            /* country border colour */
+            stroke-width: 0.1;
+            /* country border width */
+        }
+        .country-red {
+            fill: #ff3a17de;
+            /* country colour */
+            stroke: #f2f3fc;
+            /* country border colour */
+            stroke-width: 0.1;
+            /* country border width */
+        }
+
+        .country-on {
+            /* fill: #4B5358; */
+            /* highlight colour for selected country */
+            stroke: rgb(124, 0, 0);
+            stroke-width: 0.3;
+            /* border-width: 0.3;
+            border: rgb(124, 0, 0); */
+        }
+
+        .country-label-on {
+            display: block;
+        }
+
+        .countryLabel {
+            display: none;
+            /* hide all country labels by default */
+        }
+
+        .countryName {
+            fill: #FFFAFF;
+            /* country label text colour */
+        }
+
+        .countryLabelBg {
+            fill: #30BCED;
+            /* country label background colour */
+        }
+
+        #map-container {
+            fill: #630f63;
+            width: 50%;
+            margin: 5px;
+        }
+
+        #other-half {
+            background-color: brown;
+            width: 50%;
+            height: 100px;
+            margin: 5px;
+        }
+
+        #map-holder {
+            /* fill: #33ca1f; */
+            fill: #33ca1f;
+        }
+
+        #container {
+            margin: 10px;
+            position: fixed;
+            left: 0px;
+            right: 0px;
+            top: 0px;
+            bottom: 0px;
+            overflow: auto;
+            overflow-x: auto;
+        }
+        html, body{
+            height: 100%;
+            width: 100%;
+        }
+
+        .chip {
+            display: inline-block;
+            padding: 0 12.5px;
+            height: 25px;
+            font-size: 16px;
+            line-height: 25px;
+            border-radius: 12.5px;
+            background-color: #006079;
+            color: white;
+            margin: 2px;
+        }
+        .closebtn {
+            padding-left: 10px;
+            color: white;
+            font-weight: bold;
+            float: right;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .closebtn:hover {
+            color: rgb(255, 0, 0);
+        }
+
+        .chip-box {
+           /* border-style: solid;
+           border-color: blue;
+           border-width: 1px;
+           border-radius: 25px; */
+           border-radius: 30px;
+           background-color: rgba(180, 180, 180, 0.89);
+           width: max-content;
+           max-width: 100%;
+           font-size: 20px;
+           line-height: 30px;
+           padding: 5px 15px;
+           margin: 5px;
+           font-weight: bold;
+           overflow-wrap: break-word;
+           word-wrap: break-word;
+        }
+
+        .full-container {
+            width: 100%;
+            height: 100%;
+            /* margin: 5px;
+            padding: 10px 10px 10px 10px; */
+            /* margin: 10px 10px 10px 10px; */
+            /* display: table-cell; */
+        }

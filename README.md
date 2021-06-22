@@ -1,2 +1,13 @@
-# Covid-19-Data-Analysis
-Analysis, conclusions and suggestions based on the data for Covid-19 from the official CDC website.
+# visproject
+Vis project final
+
+Pre-processing file is used for modifying data for example date format
+
+
+set FLASK_APP=main
+
+set FLASK_ENV=development
+
+flask run
+
+
